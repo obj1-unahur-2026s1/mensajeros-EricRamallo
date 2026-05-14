@@ -50,7 +50,7 @@ Nuevos requerimientos para la mensajería. Surgen otros paquetes que la empresa 
 
 Se necesita:
 1. Averiguar si un paquete puede ser entregado por la empresa de mensajería, es decir, si al menos uno de sus mensajeros puede entregar el paquete.
-2. Obtener todos los mensajeros que pueden llevar un paquete dado. 
+2. Obtener todos los mensajeros que pueden llevar un paquete dado.
 3. Saber si una mensajería tiene sobrepeso. Esto sucede si el promedio del peso de los mensajeros es superior a 500 Kg. 
 4. Hacer que la empresa de mensajería envíe un paquete. Para ello elige cualquier mensajero entre los que pueden enviarlo y si no puede lo agrega a los paquetes pendientes. (leer también punto siguiente)
 5. Conocer la facturación de la empresa, que es el total ganado por los paquetes enviados.

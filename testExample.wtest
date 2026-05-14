@@ -1,9 +1,111 @@
-import example.pepita
+import paquetes.*
+import empresa.*
+import mensajeros.*
+import destinos.*
 
-describe "group of tests for pepita" {
+describe "Pueden entregar primer test" {
 
-  test "pepita has initial energy" {
-    assert.equals(100, pepita.energy())
+  test "Puede roberto entregar un paquete pagado por el puente de Brooklyn, si su peso es 90 y va en camion con 1 acoplado" {
+    roberto.pesoPropio(90)
+    roberto.vehiculo(camion)
+    camion.acoplados(1)
+    paquete.registrarPago()
+    paquete.cambiarDestino(puenteBrooklyn)
+    assert.that(paquete.puedeSerEntregadoPor(roberto))
   }
-
+  test "Neo con credito, no puede entrega un paquete en la matrix porque el mismo no esta pago" {
+    paquete.cambiarDestino(laMatrix)
+    assert.notThat(paquete.puedeSerEntregadoPor(neo))
+  }
+}
+describe "La empresa segundo test" {
+  test "Se puede contratar a Roberto" {
+    empresa.contratar(roberto)
+    assert.that(empresa.mensajeros().contains(roberto))
+    assert.equals([roberto], empresa.mensajeros())
+  }
+  test "Despedir a roberto" {
+    empresa.contratar(roberto)
+    empresa.contratar(neo)
+    empresa.despedir(roberto)
+    assert.notThat(empresa.mensajeros().contains(roberto))
+  }
+  test "Despedir a todos los mensajeros" {
+    empresa.contratar(roberto)
+    empresa.contratar(chuckNorris)
+    empresa.contratar(neo)
+    empresa.despedirATodos()
+    assert.that(empresa.mensajeros().isEmpty())
+  }
+  test "Si la mensajeria es grande (si tiene mas de dos mensajeros)" {
+    empresa.contratar(roberto)
+    empresa.contratar(chuckNorris)
+    empresa.contratar(neo)
+    assert.that(empresa.esGrande())
+  }
+  test "El paquete puede ser entregado por el primer empleado de la la empresa de mensajería." {
+    empresa.contratar(roberto)
+    empresa.contratar(chuckNorris)
+    empresa.contratar(neo)
+    paquete.registrarPago()
+    paquete.cambiarDestino(puenteBrooklyn)
+    assert.that(empresa.puedeSerEntregadoPorElPrimerMensajero(paquete))
+  }
+  test "Peso del ultimo mensajero contratado" {
+    empresa.contratar(roberto)
+    empresa.contratar(chuckNorris)
+    empresa.contratar(neo)
+    assert.equals(0, empresa.pesoDelUltimoMensajeroDeLaEmpresa())
+  }
+}
+describe "Paquetes tercer test" {
+  test "puede ser entregado por alguien" {
+    empresa.contratar(teo)
+    empresa.contratar(roberto)
+    paquetonViajero.recibirPago(200)
+    assert.that(empresa.algunMensajeroPuedeLlevar(paquetonViajero))
+  }
+  test "todos los que pueden enviar un determinado paquete" {
+    empresa.contratar(teo)
+    empresa.contratar(roberto)
+    empresa.contratar(chuckNorris)
+    empresa.contratar(neo)
+    paquetonViajero.recibirPago(200)
+    assert.equals([teo,chuckNorris,neo],empresa.todosLosMensajerosQuePuedeLlevar(paquetonViajero))
+  }
+  test "hay sobrepeso en la empresa" {
+    empresa.contratar(teo)
+    empresa.contratar(roberto)
+    empresa.contratar(chuckNorris)
+    empresa.contratar(neo)
+    roberto.vehiculo(camion)
+    camion.acoplados(8)
+    assert.that(empresa.haySobrePeso())
+  }
+  test "Esta el paqueton viajero en la lista de paquetes pendientes para enviar y entrega" {
+    empresa.contratar(roberto)
+    empresa.enviar(paquetonViajero)
+    assert.equals([paquetonViajero], empresa.paquetesPendientes())
+  }
+  test "la falturacion de la empresa" {
+    empresa.contratar(teo)
+    paquete.registrarPago()
+    empresa.enviar(paquete)
+    empresa.enviar(cajaEnvalada)
+    assert.equals(1550, empresa.facturacion())
+  }
+  test "enviando todos los paquetes" {
+    empresa.contratar(teo)
+    empresa.enviarTodosLosPaquetes([paquete,paquetito,paquetonViajero,cajaEnvalada])
+    assert.equals([paquetito,cajaEnvalada], empresa.paquetesEntregados())
+    assert.equals([paquete,paquetonViajero], empresa.paquetesPendientes())
+  }
+  test "paquete pendiente mas caro enviado" {
+    empresa.contratar(teo)
+    empresa.enviar(paquete)
+    empresa.enviar(paquetito)
+    empresa.enviar(paquetonViajero)
+    empresa.enviar(cajaEnvalada)
+    assert.equals(paquetonViajero, empresa.paquetesPendientesMasCaro())
+  }
 }
